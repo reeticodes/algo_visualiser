@@ -1,6 +1,6 @@
 import React,{useState} from "react";
 import SortingVisualiser from "./SortingVisualiser/SortingVisualiser";
-import Sample from "./Sample";
+
 import { GeistProvider, CssBaseline } from '@geist-ui/react'
 function App() {
   const [themeType, setThemeType] = useState('dark')

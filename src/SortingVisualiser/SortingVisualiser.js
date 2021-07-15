@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import './SortingVisualiser.css';
+import { mergeSort, randomize, tester } from './SortingAlgos';
 
 
 //Geist-UI
@@ -15,11 +16,6 @@ function SortingVisualiser() {
   }, [array])
 
 
-  function randomize(min, max) {
-    min = Math.ceil(min);
-    max = Math.floor(max);
-    return Math.floor(Math.random() * (max - min + 1)) + min;
-  }
   const resetArray = (e) => {
     
     console.log(e)
@@ -37,6 +33,12 @@ function SortingVisualiser() {
     
   }
 
+  const mergeSortAnimate = () =>{
+    const animations = mergeSort(array);
+    console.log('animations');
+    console.log(animations)
+  }
+
 
 
   return (
@@ -51,7 +53,11 @@ function SortingVisualiser() {
     <Col><Button size="small" type="secondary" ghost>Selection Sort</Button></Col>
   </Row>
   <Row  style={{ marginBottom: '15px' }} gap={.8}>
-    <Col><Button size="small" type="secondary" ghost>Merge Sort</Button> </Col>
+    <Col>
+    <Button
+      onClick={mergeSortAnimate}
+      size="small" type="secondary" ghost>Merge Sort</Button> 
+    </Col>
     <Col><Button size="small" type="secondary" ghost>Quick Sort</Button></Col>
     <Col><Button size="small" type="secondary" ghost>Heap Sort</Button></Col>
   </Row>
@@ -60,6 +66,12 @@ function SortingVisualiser() {
     <Button 
       className='button-gradient'
       size="small" type="secondary"  onClick={(e)=>resetArray(50)} shadow  ghost>Generate</Button> 
+  </Row>
+      <Row  style={{ marginBottom: '15px' }} gap={20}>
+    <Button 
+      onClick={tester}
+      className='button-gradient'
+      size="small" type="secondary"   shadow  ghost>TEST ALGORITHM</Button> 
   </Row>
     <Row gap={20} style={{ width: '50%' }}>
       <Slider value={array_size} 
