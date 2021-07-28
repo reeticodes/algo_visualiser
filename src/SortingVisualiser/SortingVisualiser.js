@@ -1,27 +1,39 @@
 import React, { useState, useEffect } from 'react'
 import './SortingVisualiser.css';
-import { mergeSort, randomize, tester } from './SortingAlgos';
-
-
+import { mergeSort, randomize,tester } from './SortingAlgos';
 //Geist-UI
 import {Grid,Button,Spacer,Row,Col,Slider} from '@geist-ui/react'
+
+
+// Change this value for the speed of the animations.
+const ANIMATION_SPEED_MS = 1;
+
+// Change this value for the number of bars (value) in the array.
+const NUMBER_OF_ARRAY_BARS = 310;
+
+// This is the main color of the array bars.
+const PRIMARY_COLOR = 'turquoise';
+
+// This is the color of array bars that are being compared throughout the animations.
+const SECONDARY_COLOR = 'red';
+
 
 function SortingVisualiser() {
 
   const [array, setarray] = useState([]);
   const [array_size, setarray_size] = useState(50)
   useEffect(() => {
-    console.log(array)
-    
+
   }, [array])
 
 
   const resetArray = (e) => {
+    setarray([])
+    setarray_size(0)
+    setTimeout(() => {
+      let newarr = [], sz;
     
-    console.log(e)
-    let newarr = [], sz;
-
-    if(e=="") sz=100;
+    if(e==="") sz=100;
     else sz = e;
 
     setarray_size(sz)
@@ -30,13 +42,48 @@ function SortingVisualiser() {
       newarr[i] = randomize(5, 600);
     }
     setarray(newarr);
+    }, 50);
+
+    
     
   }
 
   const mergeSortAnimate = () =>{
-    const animations = mergeSort(array);
-    console.log('animations');
-    console.log(animations)
+    let animations = mergeSort(array);
+
+    // 1,2,3
+    //change color, revert color, change color,
+    //cc,rc,cc,cc,rc,cc,cc,rc,cc,cc,rc,cc,cc,rc,cc,
+    //0 ,1 , 2, 3, 4, 5, 6, 7, 8, 9,
+
+    for(let i = 0; i<animations.length; i++){
+      const arrayBars = document.getElementsByClassName('number_bar');
+
+      const isColorChange = i%3!==2;
+      if(isColorChange){
+        const[barOneIdx,barTwoIdx] = animations[i];
+        const barOnStyle = arrayBars[barOneIdx].style;
+        const barTwoStyle = arrayBars[barTwoIdx].style;
+        
+        const color = i%3==0 ? 'red' : barOnStyle.backgrounColor==='green' ? 'green' : 'turquoise'
+        //const color = i%3==0 ?'red': 'turquoise';
+        setTimeout(() => {
+          barOnStyle.backgroundColor = color;
+          barTwoStyle.backgroundColor = color;
+        }, i*1);
+      }
+      else{
+        setTimeout(() => {
+          const [barOneIdx,newHeight] = animations[i];
+          const barOneStyle = arrayBars[barOneIdx].style;
+          barOneStyle.backgrounColor = 'green';
+          barOneStyle.height = `${newHeight}px`
+          
+        }, i*1);
+      }
+    }
+
+
   }
 
 
@@ -69,7 +116,7 @@ function SortingVisualiser() {
   </Row>
       <Row  style={{ marginBottom: '15px' }} gap={20}>
     <Button 
-      onClick={tester}
+      onClick={tester(array)}
       className='button-gradient'
       size="small" type="secondary"   shadow  ghost>TEST ALGORITHM</Button> 
   </Row>
@@ -83,7 +130,7 @@ function SortingVisualiser() {
       <Grid 
       className="number_container">
         {array.map((val, idx) => {
-          return <div style={{height:`${val}px`}} className="number_bar" key={idx}></div>
+          return <div className="number_bar" style={{height:`${val}px`,}}  key={idx}></div>
         })}
       </Grid>
     </Grid.Container>
@@ -91,3 +138,5 @@ function SortingVisualiser() {
 }
 
 export default SortingVisualiser
+
+
